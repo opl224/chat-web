@@ -11,9 +11,14 @@ export const signup = async (req, res) => {
     }
 
     const user = await User.findOne({ username });
+    const fName = await User.findOne({ fullName });
 
     if (user) {
       return res.status(400).json({ error: "Username already exists" });
+    }
+
+    if (fName) {
+      return res.status(400).json({ error: "Name already exists" });
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -25,7 +30,7 @@ export const signup = async (req, res) => {
     const newUser = new User({
       fullName,
       username,
-      password,
+      password: hashedPassword,
       gender,
       profilePic: gender === "male" ? boyProfilePic : girlProfilePic,
     });
